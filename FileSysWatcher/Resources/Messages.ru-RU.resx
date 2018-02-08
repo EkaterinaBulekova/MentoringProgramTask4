@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FileMoveDefaultDirectory" xml:space="preserve">
+    <value>Файл будет перенесен в директорию по умолчанию</value>
+    <comment>File will move to default directory</comment>
+  </data>
   <data name="NewFileFound" xml:space="preserve">
     <value>Новый файл найден </value>
     <comment>New file found</comment>
@@ -129,6 +133,10 @@
     <value>Нет подходящего правила </value>
     <comment>Right rule wasn't found</comment>
   </data>
+  <data name="TargetDirectoryCouldNotCreate" xml:space="preserve">
+    <value>Невозможно создать такую директорию - </value>
+    <comment>When target directory coludn't create</comment>
+  </data>
   <data name="TransferringFile" xml:space="preserve">
     <value>Перенос файла в конечную папку </value>
     <comment>Transferring a file to the destination folder</comment>
@@ -140,5 +148,9 @@
   <data name="WatchedDirectory" xml:space="preserve">
     <value>Начато сканирование папок - </value>
     <comment>Start watch directories message</comment>
+  </data>
+  <data name="WatchedDirectoryNotExist" xml:space="preserve">
+    <value>Такой директории не существует - </value>
+    <comment>When watched directory isn't exist</comment>
   </data>
 </root>

@@ -61,6 +61,15 @@ namespace FileSysMover.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File will move to default directory.
+        /// </summary>
+        internal static string FileMoveDefaultDirectory {
+            get {
+                return ResourceManager.GetString("FileMoveDefaultDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New file found .
         /// </summary>
         internal static string NewFileFound {
@@ -88,6 +97,15 @@ namespace FileSysMover.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The target directory couldn&apos;t create - .
+        /// </summary>
+        internal static string TargetDirectoryCouldNotCreate {
+            get {
+                return ResourceManager.GetString("TargetDirectoryCouldNotCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transferring a file to the destination folder .
         /// </summary>
         internal static string TransferringFile {
@@ -111,6 +129,15 @@ namespace FileSysMover.Resources {
         internal static string WatchedDirectory {
             get {
                 return ResourceManager.GetString("WatchedDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The watched directory is not exist - .
+        /// </summary>
+        internal static string WatchedDirectoryNotExist {
+            get {
+                return ResourceManager.GetString("WatchedDirectoryNotExist", resourceCulture);
             }
         }
     }

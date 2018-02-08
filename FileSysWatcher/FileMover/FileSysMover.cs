@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.Remoting.Contexts;
 using FileSysConfigurator.Configurators;
 using FileSysMover.Resources;
 using FileSysLogger.Logger;
@@ -35,13 +36,14 @@ namespace FileSysMover.FileMover
             _logger.Info(Messages.WatchedDirectory + string.Join(",", _configurator.WatchedDirectories));
             _configurator.WatchedDirectories.ForEach(_ =>
             {
-                if (_ != null)
+                if (_ != null && Directory.Exists(_))
                     new FileSystemWatcher(_)
                     {
                         EnableRaisingEvents = true,
                         NotifyFilter =
                             NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite
                     }.Created += FileSystemWatcher_Created;
+                else _logger.Debug(Messages.WatchedDirectoryNotExist + _ + DateTime.Today.Date.ToString(CultureInfo.CurrentCulture));
             });
         }
 
@@ -55,17 +57,25 @@ namespace FileSysMover.FileMover
         {
             var fileMoveRule = _configurator.GetFileMoveRule(name);
 
-            if (string.IsNullOrWhiteSpace(fileMoveRule?.TargetDirectoryName))
+            if (fileMoveRule == null)
             {
                 _logger.Info(Messages.RightRuleNotFound);
+                _logger.Info(Messages.FileMoveDefaultDirectory + _configurator.DefaultDirectory);
                 return Path.Combine(_configurator.DefaultDirectory, name);
             }
 
-            _logger.Info(Messages.RightRuleFound);
-            name = fileMoveRule.GetPrefix() + Path.GetFileNameWithoutExtension(name) 
-                   + fileMoveRule.GetPostfix() + Path.GetExtension(name);
+            if(!string.IsNullOrWhiteSpace(fileMoveRule.TargetDirectoryName))
+            {
+                _logger.Info(Messages.RightRuleFound);
+                name = fileMoveRule.GetPrefix() + Path.GetFileNameWithoutExtension(name)
+                                                + fileMoveRule.GetPostfix() + Path.GetExtension(name);
 
-            return Path.Combine(fileMoveRule.GetDirectory(), name);
+                return Path.Combine(fileMoveRule.GetDirectory(), name);
+            }
+
+            _logger.Debug(Messages.TargetDirectoryCouldNotCreate + fileMoveRule.TargetDirectoryName);
+            _logger.Info(Messages.FileMoveDefaultDirectory + _configurator.DefaultDirectory);
+            return Path.Combine(_configurator.DefaultDirectory, name);
         }
 
         private void MoveFile(string source, string destination)
@@ -73,9 +83,11 @@ namespace FileSysMover.FileMover
             try
             {
                 var directory = Path.GetDirectoryName(destination);
+
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory ?? throw new InvalidOperationException());
+
                 }
 
                 if (File.Exists(destination))
@@ -88,7 +100,8 @@ namespace FileSysMover.FileMover
             }
             catch (Exception exception)
             {
-                _logger.Debug(Messages.UnexpectedError + DateTime.Today.Date.ToString(CultureInfo.CurrentCulture), exception);
+                _logger.Debug(Messages.UnexpectedError + DateTime.Today.Date.ToString(CultureInfo.CurrentCulture),
+                    exception);
             }
 
         }

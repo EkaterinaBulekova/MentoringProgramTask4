@@ -14,26 +14,38 @@ namespace FilSysConsole
     /// </summary>
     internal class Program
     {
-        private static readonly IKernel Kernel =
-            new StandardKernel(new FileMoverModule(), new ConfiguratorModule(), new FileSysLoggerModule());
-        private static readonly ICultureConfigurator Conf = Kernel.Get<ICultureConfigurator>();
-        private static readonly IFileSysMover Mover = Kernel.Get<IFileSysMover>();
+        private static ICultureConfigurator _conf;
+        private static IFileSysMover _mover;
 
         private static void Main()
         {
-            Console.CancelKeyPress += (o, e) => Environment.Exit(0);
-            Conf.SetCurrentCulture();
+            InitialDependecy();
+            _conf.SetCurrentCulture();
             Console.WriteLine(Messages.Hello);
-            Console.WriteLine(Messages.CultureType + Conf.Culture.DisplayName);
+            Console.WriteLine(Messages.CultureType + _conf.Culture.DisplayName);
             Console.WriteLine(Messages.ForCultureChange);
             var inputKey = Console.ReadKey(true);
             if (inputKey.Key == ConsoleKey.Y)
             {
-                Conf.SetCurrentCulture(Conf.Culture.Name == "ru-RU" ? "en-EN" : "ru-RU");
+                _conf.SetCurrentCulture(_conf.Culture.Name == "ru-RU" ? "en-EN" : "ru-RU");
             }
 
-            Mover.FileSysMoveStart();
+            _mover.FileSysMoveStart();
             Console.WriteLine(Messages.ForExit);
+            Console.CancelKeyPress += (o, e) => Environment.Exit(0);
+            WatingCancelKeyPress();
+        }
+
+        private static void InitialDependecy()
+        {
+            IKernel kernel =
+            new StandardKernel(new FileMoverModule(), new ConfiguratorModule(), new FileSysLoggerModule());
+            _conf = kernel.Get<ICultureConfigurator>();
+            _mover = kernel.Get<IFileSysMover>();
+        }
+
+        private static void WatingCancelKeyPress()
+        {
             while (true)
             {
                 Console.ReadKey(true);
